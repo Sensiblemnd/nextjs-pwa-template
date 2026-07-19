@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full-bleed red background — maskable safe zone is inner 80% (approx 410x410 centered) -->
+  <rect width="512" height="512" fill="#b91c1c"/>
+  <!-- Warning triangle centered within safe zone -->
+  <path d="M256 148 L390 368 H122 Z" fill="none" stroke="white" stroke-width="24" stroke-linejoin="round"/>
+  <rect x="244" y="218" width="24" height="88" fill="white" rx="7"/>
+  <circle cx="256" cy="334" r="14" fill="white"/>
+</svg>

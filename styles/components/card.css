@@ -1,0 +1,103 @@
+/* ── Quick Action Button ── */
+.quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 8px;
+  background-color: hsl(var(--surface-raised));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+  min-block-size: var(--spacing-touch);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:is(:hover, :focus-visible) {
+    background-color: hsl(var(--surface-overlay));
+    border-color: var(--border-strong);
+  }
+
+  &[data-type="safety"] {
+    & .action-icon {
+      color: hsl(var(--alert-critical));
+    }
+    &:is(:hover, :focus-visible) {
+      border-color: hsl(var(--alert-critical) / 0.5);
+    }
+  }
+  &[data-type="outage"] {
+    & .action-icon {
+      color: hsl(var(--alert-warning));
+    }
+    &:is(:hover, :focus-visible) {
+      border-color: hsl(var(--alert-warning) / 0.5);
+    }
+  }
+  &[data-type="infra"] {
+    & .action-icon {
+      color: hsl(var(--alert-info));
+    }
+    &:is(:hover, :focus-visible) {
+      border-color: hsl(var(--alert-info) / 0.5);
+    }
+  }
+
+  .action-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+}
+
+/* ── Section Header ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 12px;
+  padding-inline: 16px;
+
+  .section-title {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+  }
+
+  .section-count {
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-secondary);
+  }
+}
+
+/* ── Card base primitive ── */
+.card {
+  background-color: hsl(var(--surface-raised));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+
+  &:is(:hover, :focus-within) {
+    background-color: hsl(var(--surface-overlay));
+  }
+
+  &[data-static] {
+    &:is(:hover, :focus-within) {
+      background-color: hsl(var(--surface-raised));
+    }
+  }
+}

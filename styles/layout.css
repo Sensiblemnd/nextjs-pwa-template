@@ -1,0 +1,75 @@
+@layer layout {
+  /* App shell using logical properties */
+  .app-shell {
+    block-size: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin-inline: auto;
+    overflow: hidden;
+
+    > main {
+      flex: 1;
+      min-block-size: 0;
+    }
+  }
+
+  /* Safe area utility classes — base values for browsers without env() */
+  .safe-bottom {
+    padding-block-end: 16px;
+  }
+  .safe-x {
+    padding-inline: 16px;
+  }
+
+  @supports (padding: env(safe-area-inset-top)) {
+    .safe-top {
+      padding-block-start: env(safe-area-inset-top);
+    }
+    .safe-bottom {
+      padding-block-end: max(env(safe-area-inset-bottom), 16px);
+    }
+    .safe-x {
+      padding-inline-start: max(env(safe-area-inset-left), 16px);
+      padding-inline-end: max(env(safe-area-inset-right), 16px);
+    }
+  }
+
+  /* Stack utility */
+  .stack {
+    display: flex;
+    flex-direction: column;
+
+    &[data-gap="xs"] {
+      gap: 4px;
+    }
+    &[data-gap="sm"] {
+      gap: 8px;
+    }
+    &[data-gap="md"] {
+      gap: 16px;
+    }
+    &[data-gap="lg"] {
+      gap: 24px;
+    }
+  }
+
+  /* Cluster (horizontal wrap) */
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    &[data-gap="sm"] {
+      gap: 8px;
+    }
+    &[data-gap="md"] {
+      gap: 12px;
+    }
+  }
+
+  @supports (height: 100dvh) {
+    .app-shell {
+      block-size: 100dvh;
+    }
+  }
+}

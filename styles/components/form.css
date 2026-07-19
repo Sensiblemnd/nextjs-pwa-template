@@ -1,0 +1,156 @@
+/* ── Form Elements ── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: hsl(var(--surface-raised));
+    border: 2px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 12px 14px;
+    min-block-size: var(--spacing-touch);
+    transition: border-color var(--transition-fast);
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: hsl(var(--brand));
+      box-shadow: 0 0 0 3px hsl(var(--brand) / 0.15);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-block-size: 96px;
+
+    &[data-error="true"] {
+      border-color: hsl(var(--alert-critical));
+    }
+  }
+}
+
+/* ── Severity Chip ── */
+.severity-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-block: 3px;
+  padding-inline: 8px;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  &[data-level="critical"] {
+    background-color: hsl(var(--alert-critical) / 0.15);
+    color: hsl(var(--alert-critical));
+  }
+  &[data-level="warning"] {
+    background-color: hsl(var(--alert-warning) / 0.15);
+    color: hsl(var(--alert-warning));
+  }
+  &[data-level="info"] {
+    background-color: hsl(var(--alert-info) / 0.15);
+    color: hsl(var(--alert-info));
+  }
+}
+
+/* ── Severity grid (ReportForm) ── */
+.severity-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.severity-option {
+  cursor: pointer;
+  padding: 10px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: hsl(var(--surface-raised));
+  transition: all var(--transition-fast);
+
+  &[data-active="true"] {
+    border-width: 2px;
+    border-color: hsl(var(--brand));
+    color: hsl(var(--brand));
+    background: hsl(var(--brand) / 0.1);
+  }
+}
+
+/* ── Form footer (cancel + submit) ── */
+.form-footer {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
+
+  .btn-primary {
+    inline-size: 100%;
+  }
+}
+
+/* ── Form feedback (error + char count) ── */
+.form-feedback {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: -2px;
+
+  .form-error {
+    font-size: 0.8125rem;
+    color: hsl(var(--alert-critical));
+  }
+
+  .form-char-count {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-inline-start: auto;
+  }
+}
+
+/* ── Report Form ── */
+.report-form {
+  padding: 16px;
+  display: grid;
+  gap: 16px;
+}
+
+.form-success {
+  padding: 48px 24px;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.form-success-text {
+  font-weight: 700;
+  color: hsl(var(--alert-safe));
+  font-size: 0.9375rem;
+}
+
+.locate-wrapper {
+  display: grid;
+  gap: 4px;
+}

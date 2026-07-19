@@ -1,0 +1,198 @@
+@layer components {
+  /* ── Offline Status Banner ── */
+  .offline-banner {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: hsl(var(--surface-base));
+
+    &[data-online="true"] {
+      background-color: hsl(var(--alert-safe) / 0.95);
+    }
+
+    &[data-online="false"] {
+      background-color: hsl(var(--alert-warning) / 0.95);
+    }
+
+    @supports (backdrop-filter: blur(0)) {
+      backdrop-filter: blur(4px);
+    }
+  }
+
+  /* ── Offline Queue Badge ── */
+  .offline-queue {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background-color: hsl(var(--alert-warning) / 0.1);
+    border-block: 1px solid hsl(var(--alert-warning) / 0.2);
+    font-size: 0.8125rem;
+
+    .queue-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 20px;
+      block-size: 20px;
+      background-color: hsl(var(--alert-warning));
+      color: hsl(0 0% 0%);
+      border-radius: 9999px;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+  }
+
+  /* ── Connectivity Indicator ── */
+  .connectivity-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-block: 6px;
+    padding-inline: 16px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-block-end: 1px solid var(--border-subtle);
+
+    &[data-online="true"] {
+      color: hsl(var(--alert-safe));
+
+      .connectivity-dot {
+        background-color: hsl(var(--alert-safe));
+        box-shadow: 0 0 0 2px hsl(var(--alert-safe) / 0.25);
+        animation: pulse-dot 2s ease infinite;
+
+        @media (prefers-reduced-motion: reduce) {
+          animation: none;
+        }
+      }
+    }
+
+    &[data-online="false"] {
+      color: hsl(var(--alert-critical));
+
+      .connectivity-dot {
+        background-color: hsl(var(--alert-critical));
+      }
+    }
+
+    .connectivity-dot {
+      display: inline-block;
+      inline-size: 8px;
+      block-size: 8px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+
+    .connectivity-pending {
+      margin-inline-start: auto;
+      color: hsl(var(--alert-warning));
+    }
+
+    .connectivity-time {
+      margin-inline-start: auto;
+      color: var(--text-muted);
+    }
+
+    .connectivity-pending + .connectivity-time {
+      margin-inline-start: 8px;
+    }
+  }
+
+  /* ── Sync Status ── */
+  .sync-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+
+    &[data-syncing="true"] {
+      color: hsl(var(--alert-info));
+      & .sync-icon {
+        animation: spin 1s linear infinite;
+
+        @media (prefers-reduced-motion: reduce) {
+          animation: none;
+        }
+      }
+    }
+    &[data-synced="true"] {
+      color: hsl(var(--alert-safe));
+    }
+    &[data-error="true"] {
+      color: hsl(var(--alert-critical));
+    }
+  }
+
+  /* ── Offline Fallback Page ── */
+  .offline-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 100%;
+    gap: 16px;
+    padding-block: 48px;
+    padding-inline: 24px;
+    text-align: center;
+
+    .offline-page-icon {
+      color: var(--text-muted);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin: 0;
+      max-inline-size: 300px;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .offline-page-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-block-start: 8px;
+      inline-size: 100%;
+      max-inline-size: 280px;
+
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+    }
+  }
+
+  @supports (padding: env(safe-area-inset-top)) {
+    .connectivity-bar {
+      padding-inline: max(env(safe-area-inset-left), 16px) max(env(safe-area-inset-right), 16px);
+    }
+    .offline-banner {
+      padding-block-start: max(env(safe-area-inset-top), 10px);
+      padding-inline: max(env(safe-area-inset-left), 16px) max(env(safe-area-inset-right), 16px);
+    }
+  }
+}

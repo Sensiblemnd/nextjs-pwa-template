@@ -1,0 +1,51 @@
+@layer tokens {
+  :root {
+    --font-scale: 1;
+
+    /* Dark-first surfaces */
+    --surface-base: 220 14% 8%;
+    --surface-raised: 220 12% 12%;
+    --surface-overlay: 220 10% 16%;
+
+    /* Status colors */
+    --alert-critical: 0 85% 55%;
+    --alert-warning: 38 92% 50%;
+    --alert-info: 210 80% 55%;
+    --alert-safe: 142 69% 45%;
+
+    /* Brand — civic blue */
+    --brand: 210 100% 50%;
+    --brand-dim: 210 60% 30%;
+    --brand-text: 210 100% 58%;
+
+    /* Typography */
+    --text-primary: hsl(0 0% 95%);
+    --text-secondary: hsl(0 0% 75%);
+    --text-muted: hsl(0 0% 60%);
+
+    /* Spacing */
+    --spacing-touch: 44px;
+    --spacing-compact: 8px;
+
+    /* Borders */
+    --border-subtle: hsl(220 10% 20%);
+    --border-strong: hsl(220 10% 30%);
+
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* Transitions */
+    --transition-fast: 120ms ease;
+    --transition-base: 200ms ease;
+
+    /* Severity indicator widths */
+    --severity-bar: 4px;
+
+    /* Font families */
+    --font-sans: "Inter Variable", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  }
+}

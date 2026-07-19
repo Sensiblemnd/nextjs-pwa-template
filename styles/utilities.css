@@ -1,0 +1,29 @@
+@layer utilities {
+  .text-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .text-primary {
+    color: var(--text-primary);
+  }
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .surface-base {
+    background-color: hsl(var(--surface-base));
+  }
+  .surface-raised {
+    background-color: hsl(var(--surface-raised));
+  }
+  .surface-overlay {
+    background-color: hsl(var(--surface-overlay));
+  }
+  .border-subtle {
+    border-color: var(--border-subtle);
+  }
+  .divide-subtle > * + * {
+    border-block-start: 1px solid var(--border-subtle);
+  }
+}

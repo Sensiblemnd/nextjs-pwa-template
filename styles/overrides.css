@@ -1,0 +1,5 @@
+/* Third-party stylesheet overrides live here. Unlayered vendor CSS (e.g. a
+   map library loaded from a CDN) beats any layered rule, so overrides in this
+   layer need !important to win. Empty by default. */
+@layer overrides {
+}

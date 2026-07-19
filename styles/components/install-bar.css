@@ -1,0 +1,49 @@
+/* ── Install prompt bar (InstallPromptBar) ── */
+.install-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 8px;
+  padding-inline: 16px 8px;
+  background-color: hsl(var(--surface-raised));
+  border-block-end: 1px solid var(--border-subtle);
+  min-block-size: 44px;
+}
+
+.install-bar-text {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.install-bar-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background-color: hsl(var(--brand));
+  color: var(--text-primary);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.install-bar-dismiss {
+  inline-size: 36px;
+  block-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
