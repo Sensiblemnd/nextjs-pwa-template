@@ -1,34 +1,3 @@
-.status-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-block: 10px;
-  padding-inline: 16px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  border-block-end: 1px solid var(--border-subtle);
-
-  &[data-status="critical"] {
-    background-color: hsl(var(--alert-critical) / 0.12);
-    color: hsl(var(--alert-critical));
-    border-inline-start: var(--severity-bar) solid hsl(var(--alert-critical));
-  }
-
-  &[data-status="warning"] {
-    background-color: hsl(var(--alert-warning) / 0.12);
-    color: hsl(var(--alert-warning));
-    border-inline-start: var(--severity-bar) solid hsl(var(--alert-warning));
-  }
-
-  &[data-status="normal"] {
-    background-color: hsl(var(--alert-safe) / 0.08);
-    color: hsl(var(--alert-safe));
-    border-inline-start: var(--severity-bar) solid hsl(var(--alert-safe));
-  }
-}
-
 .queue-sync-btn {
   margin-inline-start: auto;
   background: none;
@@ -57,18 +26,18 @@
   gap: 12px;
   padding: 12px 16px;
   background-color: hsl(var(--brand));
-  color: #ffffff;
+  color: hsl(0 0% 100%);
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 16px hsl(0 0% 0% / 0.5);
 
   .sw-update-btn {
     padding: 6px 14px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background-color: hsl(0 0% 100% / 0.2);
+    border: 1px solid hsl(0 0% 100% / 0.35);
     border-radius: 6px;
-    color: #ffffff;
+    color: hsl(0 0% 100%);
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;

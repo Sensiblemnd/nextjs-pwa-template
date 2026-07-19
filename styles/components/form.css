@@ -46,33 +46,6 @@
   }
 }
 
-/* ── Severity Chip ── */
-.severity-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding-block: 3px;
-  padding-inline: 8px;
-  border-radius: 9999px;
-  font-size: 0.625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-
-  &[data-level="critical"] {
-    background-color: hsl(var(--alert-critical) / 0.15);
-    color: hsl(var(--alert-critical));
-  }
-  &[data-level="warning"] {
-    background-color: hsl(var(--alert-warning) / 0.15);
-    color: hsl(var(--alert-warning));
-  }
-  &[data-level="info"] {
-    background-color: hsl(var(--alert-info) / 0.15);
-    color: hsl(var(--alert-info));
-  }
-}
-
 /* ── Severity grid (ReportForm) ── */
 .severity-grid {
   display: grid;

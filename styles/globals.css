@@ -7,17 +7,16 @@
 @import "./utilities.css";
 @import "./overrides.css";
 @import "./components/misc.css" layer(components);
-@import "./components/notif.css" layer(components);
 @import "./components/skeleton.css" layer(components);
 @import "./components/offline.css" layer(components);
 @import "./components/nav.css" layer(components);
 @import "./components/button.css" layer(components);
 @import "./components/form.css" layer(components);
 @import "./components/list-page-header.css" layer(components);
-@import "./components/card.css" layer(components);
 @import "./components/alert-card.css" layer(components);
 @import "./components/install-bar.css" layer(components);
 @import "./components/home.css" layer(components);
 @import "./components/error-page.css" layer(components);
+@import "./components/pull-to-refresh.css" layer(components);
 
 @layer base, tokens, layout, components, utilities, overrides;

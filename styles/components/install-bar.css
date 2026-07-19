@@ -8,7 +8,7 @@
   padding-inline: 16px 8px;
   background-color: hsl(var(--surface-raised));
   border-block-end: 1px solid var(--border-subtle);
-  min-block-size: 44px;
+  min-block-size: var(--spacing-touch);
 }
 
 .install-bar-text {

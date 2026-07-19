@@ -22,10 +22,6 @@
     transition: color var(--transition-fast);
     min-block-size: var(--spacing-touch);
 
-    .nav-icon {
-      font-size: 1.25rem;
-    }
-
     &[aria-current="page"] {
       color: hsl(var(--brand-text));
     }
@@ -61,9 +57,9 @@
   letter-spacing: 0.01em;
 }
 
-.top-bar-menu-btn {
-  width: 44px;
-  height: 44px;
+/* Sizing relies on base.css's global 44px min touch target for button/[role=button] */
+.top-bar-menu-btn,
+.menu-drawer-close {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,7 +79,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: hsl(0 0% 0% / 0.55);
   z-index: 1999;
 }
 
@@ -124,21 +120,6 @@
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
-}
-
-.menu-drawer-close {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  border-radius: 8px;
-  touch-action: manipulation;
-  flex-shrink: 0;
 }
 
 .menu-drawer-list {

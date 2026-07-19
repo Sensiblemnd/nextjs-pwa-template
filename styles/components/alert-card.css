@@ -13,14 +13,6 @@
   cursor: default;
   transition: background-color var(--transition-fast);
 
-  &[data-clickable] {
-    cursor: pointer;
-
-    &:is(:hover, :focus-within) {
-      background-color: hsl(var(--surface-overlay));
-    }
-  }
-
   &[data-severity="critical"] {
     border-inline-start-color: hsl(var(--alert-critical));
   }
@@ -29,14 +21,6 @@
   }
   &[data-severity="info"] {
     border-inline-start-color: hsl(var(--alert-info));
-  }
-
-  &[data-category-group] {
-    border-inline-start-color: hsl(var(--category-color));
-
-    .alert-icon {
-      color: hsl(var(--category-color));
-    }
   }
 
   .alert-icon {
@@ -69,23 +53,6 @@
     color: var(--text-primary);
     line-height: 1.3;
     flex: 1;
-  }
-
-  .alert-view-more {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    padding: 2px;
-    background-color: hsl(var(--brand) / 0.15);
-    border-radius: 4px;
-    color: hsl(var(--brand));
-    flex-shrink: 0;
-  }
-
-  &[data-confirmed="true"] {
-    background-color: hsl(var(--alert-safe) / 0.06);
   }
 
   .alert-body {
@@ -121,20 +88,6 @@
   border-radius: 20px;
   color: var(--text-muted);
   font-size: 0.75rem;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.alert-confirmed-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  background-color: hsl(var(--alert-safe) / 0.15);
-  color: hsl(var(--alert-safe));
-  font-size: 0.75rem;
-  font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
 }

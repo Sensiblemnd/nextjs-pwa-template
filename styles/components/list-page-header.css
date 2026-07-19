@@ -33,7 +33,7 @@
   inline-size: 32px;
   block-size: 32px;
   border-radius: var(--radius-sm);
-  color: #ffffff;
+  color: hsl(0 0% 100%);
   text-decoration: none;
   font-size: 1.25rem;
   font-weight: 700;

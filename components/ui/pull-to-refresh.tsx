@@ -2,7 +2,6 @@
 import { usePullToRefresh } from "@/lib/hooks/use-pull-to-refresh";
 
 const THRESHOLD = 72;
-const INDICATOR_SIZE = 32;
 
 export function PullToRefresh({
   onRefresh,
@@ -22,49 +21,29 @@ export function PullToRefresh({
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      style={{ position: "relative" }}
+      className="pull-to-refresh"
+      style={{ "--pull-y": `${pullY}px` } as React.CSSProperties}
     >
       {/* Spinner — sits above the content, slides into view as you pull */}
       <div
         aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: pullY - INDICATOR_SIZE - 8,
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          height: INDICATOR_SIZE + 8,
-          pointerEvents: "none",
-          opacity: isActive ? 1 : 0,
-          transition: isSnapping ? "top 0.2s ease, opacity 0.15s" : "none",
-          zIndex: 10,
-        }}
+        className="pull-to-refresh-spinner-wrap"
+        data-active={isActive}
+        data-snapping={isSnapping}
       >
         <div
-          style={{
-            width: INDICATOR_SIZE,
-            height: INDICATOR_SIZE,
-            borderRadius: "50%",
-            borderWidth: "2.5px",
-            borderStyle: "solid",
-            borderColor: "var(--border-subtle)",
-            borderTopColor: "hsl(var(--brand))",
-            transform: refreshing ? undefined : `rotate(${progress * 270}deg)`,
-            animation: refreshing ? "spin 0.75s linear infinite" : undefined,
-            transition: refreshing ? undefined : "transform 0.05s linear",
-          }}
+          className="pull-to-refresh-spinner"
+          data-refreshing={refreshing}
+          style={{ "--pull-progress": progress } as React.CSSProperties}
         />
       </div>
 
       {/* Content shifts down with pull, snaps back on release */}
       <div
-        style={{
-          transform: `translateY(${pullY}px)`,
-          transition: isSnapping ? "transform 0.2s ease" : "none",
-          willChange: pullY > 0 ? "transform" : "auto",
-        }}
+        className="pull-to-refresh-content"
+        data-snapping={isSnapping}
+        data-pulling={pullY > 0}
+        style={{ "--pull-y": `${pullY}px` } as React.CSSProperties}
       >
         {children}
       </div>

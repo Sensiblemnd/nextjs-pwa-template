@@ -112,32 +112,6 @@
     }
   }
 
-  /* ── Sync Status ── */
-  .sync-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-
-    &[data-syncing="true"] {
-      color: hsl(var(--alert-info));
-      & .sync-icon {
-        animation: spin 1s linear infinite;
-
-        @media (prefers-reduced-motion: reduce) {
-          animation: none;
-        }
-      }
-    }
-    &[data-synced="true"] {
-      color: hsl(var(--alert-safe));
-    }
-    &[data-error="true"] {
-      color: hsl(var(--alert-critical));
-    }
-  }
-
   /* ── Offline Fallback Page ── */
   .offline-page {
     display: flex;
