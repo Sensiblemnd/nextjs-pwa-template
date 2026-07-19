@@ -1,7 +1,6 @@
 # Next.js PWA Template
 
 Offline-first PWA starter built with Next.js 16 (App Router), React 19, Serwist, and IndexedDB.
-Extracted from a production civic-alert app and genericized.
 
 ## What you get
 
