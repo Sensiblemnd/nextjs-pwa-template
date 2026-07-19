@@ -7,20 +7,24 @@ import { z } from "zod";
 import { enqueueReport } from "@/lib/db";
 import { syncPendingReports } from "@/lib/sync";
 import { getCurrentPosition } from "@/lib/geolocation";
-import { REPORT_CATEGORIES, getCategoryConfig } from "@/lib/categories";
+import { REPORT_CATEGORIES, getCategoryLabel } from "@/lib/categories";
+import { useI18n } from "@/lib/i18n/client";
 import type { ReportCategory } from "@/lib/db";
 
-const reportSchema = z.object({
-  category: z.enum(REPORT_CATEGORIES),
-  description: z.string().min(1, "La descripción es obligatoria").max(500, "Máximo 500 caracteres"),
-  address: z.string(),
-  severity: z.enum(["low", "medium", "high", "critical"]),
-});
+// Schema is built per-locale so Zod validation messages follow the UI language
+function makeReportSchema(required: string, max: string) {
+  return z.object({
+    category: z.enum(REPORT_CATEGORIES),
+    description: z.string().min(1, required).max(500, max),
+    address: z.string(),
+    severity: z.enum(["low", "medium", "high", "critical"]),
+  });
+}
 
-type ReportFormValues = z.infer<typeof reportSchema>;
+type ReportFormValues = z.infer<ReturnType<typeof makeReportSchema>>;
 
-const resolver = async (values: unknown) => {
-  const result = reportSchema.safeParse(values);
+const makeResolver = (schema: ReturnType<typeof makeReportSchema>) => async (values: unknown) => {
+  const result = schema.safeParse(values);
   if (result.success) return { values: result.data, errors: {} };
   const errors: Record<string, { type: string; message: string }> = {};
   for (const issue of result.error.issues) {
@@ -28,13 +32,6 @@ const resolver = async (values: unknown) => {
     if (path && !errors[path]) errors[path] = { type: issue.code, message: issue.message };
   }
   return { values: {}, errors };
-};
-
-const SEVERITY_LABELS: Record<string, string> = {
-  low: "Baja",
-  medium: "Media",
-  high: "Alta",
-  critical: "Crítica",
 };
 
 export function ReportForm({
@@ -46,6 +43,7 @@ export function ReportForm({
   defaultCategory?: ReportCategory;
   onSuccess?: () => void;
 }) {
+  const { locale, t } = useI18n();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
   const [geoError, setGeoError] = useState<string | null>(null);
@@ -56,6 +54,11 @@ export function ReportForm({
       if (successTimerRef.current !== null) clearTimeout(successTimerRef.current);
     },
     []
+  );
+
+  const resolver = useMemo(
+    () => makeResolver(makeReportSchema(t.form.descriptionRequired, t.form.descriptionMax)),
+    [t]
   );
 
   const {
@@ -79,9 +82,9 @@ export function ReportForm({
   const sortedCategories = useMemo(
     () =>
       [...categories].sort((a, b) =>
-        getCategoryConfig(a).labelES.localeCompare(getCategoryConfig(b).labelES, "es")
+        getCategoryLabel(a, locale).localeCompare(getCategoryLabel(b, locale), locale)
       ),
-    [categories]
+    [categories, locale]
   );
 
   const handleLocate = async () => {
@@ -94,12 +97,12 @@ export function ReportForm({
       const code = err instanceof Error ? err.message : "";
       const msg =
         code === "1"
-          ? "Ubicación no disponible: verifica los permisos de ubicación"
+          ? t.form.geoPermission
           : code === "2"
-            ? "Ubicación no disponible en este dispositivo"
+            ? t.form.geoUnsupported
             : code === "3"
-              ? "Tiempo agotado: intenta de nuevo"
-              : "No se pudo obtener la ubicación";
+              ? t.form.geoTimeout
+              : t.form.geoFailed;
       setGeoError(msg);
     } finally {
       setGeoLoading(false);
@@ -128,7 +131,7 @@ export function ReportForm({
     return (
       <div className="form-success">
         <CheckCircle size={48} color="hsl(var(--alert-safe))" aria-hidden="true" />
-        <p className="form-success-text">Reporte guardado</p>
+        <p className="form-success-text">{t.form.saved}</p>
       </div>
     );
   }
@@ -136,18 +139,18 @@ export function ReportForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="report-form">
       <div className="form-field">
-        <label htmlFor="category">Tipo</label>
+        <label htmlFor="category">{t.form.type}</label>
         <select id="category" {...register("category")}>
           {sortedCategories.map((cat) => (
             <option key={cat} value={cat}>
-              {getCategoryConfig(cat).labelES}
+              {getCategoryLabel(cat, locale)}
             </option>
           ))}
         </select>
       </div>
 
       <div className="form-field">
-        <label>Gravedad</label>
+        <label>{t.form.severity}</label>
         <div className="severity-grid">
           {(["low", "medium", "high", "critical"] as const).map((lvl) => (
             <label
@@ -156,18 +159,18 @@ export function ReportForm({
               data-active={currentSeverity === lvl ? "true" : undefined}
             >
               <input type="radio" value={lvl} {...register("severity")} className="hidden-radio" />
-              {SEVERITY_LABELS[lvl]}
+              {t.form.severities[lvl]}
             </label>
           ))}
         </div>
       </div>
 
       <div className="form-field">
-        <label htmlFor="description">Descripción *</label>
+        <label htmlFor="description">{t.form.description} *</label>
         <textarea
           id="description"
           {...register("description")}
-          placeholder="¿Qué está pasando?"
+          placeholder={t.form.descriptionPlaceholder}
           maxLength={500}
           data-error={errors.description ? "true" : undefined}
         />
@@ -182,12 +185,12 @@ export function ReportForm({
       </div>
 
       <div className="form-field">
-        <label htmlFor="address">Dirección</label>
+        <label htmlFor="address">{t.form.address}</label>
         <input
           id="address"
           type="text"
           {...register("address")}
-          placeholder="Calle, referencia..."
+          placeholder={t.form.addressPlaceholder}
         />
       </div>
 
@@ -201,10 +204,10 @@ export function ReportForm({
         >
           <MapPin size={14} aria-hidden="true" />{" "}
           {geoLoading
-            ? "Obteniendo ubicación..."
+            ? t.form.locating
             : coords
               ? `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
-              : "Mi ubicación"}
+              : t.form.locate}
         </button>
         {geoError && (
           <p className="form-error" role="alert">
@@ -215,10 +218,10 @@ export function ReportForm({
 
       <div className="form-footer">
         <button type="button" onClick={() => window.history.back()} className="btn-secondary">
-          Cancelar
+          {t.form.cancel}
         </button>
         <button type="submit" disabled={isSubmitting} className="btn-primary">
-          {isSubmitting ? "Guardando..." : "Enviar reporte"}
+          {isSubmitting ? t.form.submitting : t.form.submit}
         </button>
       </div>
     </form>

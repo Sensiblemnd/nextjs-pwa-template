@@ -33,6 +33,7 @@ Writes never go straight to the network. The flow spans several files that must 
 5. `app/api/reports/route.ts` — treats the client-supplied `id` as an idempotency key, so a double sync never duplicates rows (in-memory Map store; meant to be replaced with a real DB)
 
 **Cross-file invariants** (breaking these silently breaks sync):
+
 - `DB_NAME` must match between `lib/db/index.ts` and `app/sw.ts` (both open the same IndexedDB)
 - `SYNC_LOCK_NAME` in `lib/sync/index.ts` must match the lock name in `app/sw.ts`
 - The client-generated report `id` must remain the idempotency key end to end
@@ -48,6 +49,19 @@ Serwist-based: precached app shell, network-first page/API caching with timeouts
 - `next.config.ts` — security headers + CSP on every response (`unsafe-eval` allowed only in dev)
 - `proxy.ts` — CORS for `/api/*`: mutating methods require an allowed Origin (production allows only `NEXT_PUBLIC_SITE_URL`); GET/HEAD are public
 - `lib/sanitize.ts` — `stripHtml()` before anything is stored; Zod validation at every external input boundary (forms and API routes both)
+
+### i18n (`lib/i18n/`)
+
+Two locales (`en`, `es`), cookie-based — the locale never appears in the URL (path prefixes would fragment the service worker's precache and `/offline` fallback).
+
+- `lib/i18n/dictionaries/en.ts` defines the `Dictionary` type; `es.ts` is annotated with it, so a missing/mistyped key is a compile error. Plurals/interpolations are functions on the dictionary.
+- Server components: `getLocale()` / `getServerDictionary()` from `lib/i18n/server.ts` (cookie → Accept-Language → default). Client components: `useI18n()` from `lib/i18n/client.tsx` returns `{ locale, t }`.
+- `LocaleProvider` (root layout) mirrors the resolved locale into the `locale` cookie and the IndexedDB `settings` store — the settings copy is how `app/sw.ts` localizes push notifications, since the SW can't read React context.
+- Switching language = set cookie + `router.refresh()` (see the language item in `components/navigation/top-bar.tsx`).
+- Category labels are per-locale in `lib/categories.ts` (`getCategoryLabel(id, locale)`), not in the dictionaries.
+- `app/manifest.ts` is deliberately single-locale (manifests are fetched once at install); it ships in the default locale.
+
+**Never hardcode user-facing strings in components** — add a key to both dictionaries.
 
 ### CSS architecture
 

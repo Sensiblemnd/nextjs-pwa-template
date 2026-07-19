@@ -1,38 +1,23 @@
 import Link from "next/link";
 import { WifiOff, Download, RefreshCw, ClipboardList } from "lucide-react";
+import { getServerDictionary } from "@/lib/i18n/server";
 
-const FEATURES = [
-  {
-    icon: WifiOff,
-    title: "Funciona sin conexión",
-    description:
-      "Service worker con Serwist: precache del shell, cache de páginas y datos, y página de respaldo sin conexión.",
-  },
-  {
-    icon: RefreshCw,
-    title: "Cola de sincronización",
-    description:
-      "Los reportes se guardan en IndexedDB y se sincronizan automáticamente al reconectar (Background Sync + Web Locks).",
-  },
-  {
-    icon: Download,
-    title: "Instalable",
-    description:
-      "Manifest, iconos y barra de instalación con soporte para el aviso nativo de Android y las instrucciones de iOS.",
-  },
-] as const;
+const FEATURE_ICONS = { offline: WifiOff, sync: RefreshCw, install: Download } as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getServerDictionary();
+  const features = (["offline", "sync", "install"] as const).map((key) => ({
+    icon: FEATURE_ICONS[key],
+    ...t.home.features[key],
+  }));
+
   return (
     <div className="home-page">
-      <h1 className="home-title">Next.js PWA Template</h1>
-      <p className="home-subtitle">
-        Plantilla offline-first con Next.js, Serwist e IndexedDB. Explora el ejemplo de reportes
-        para ver la cola de sincronización en acción.
-      </p>
+      <h1 className="home-title">{t.home.title}</h1>
+      <p className="home-subtitle">{t.home.subtitle}</p>
 
       <ul className="home-feature-list" role="list">
-        {FEATURES.map((feature) => {
+        {features.map((feature) => {
           const Icon = feature.icon;
           return (
             <li key={feature.title} className="home-feature">
@@ -48,7 +33,7 @@ export default function HomePage() {
 
       <Link href="/reports" className="btn-primary home-cta">
         <ClipboardList size={18} aria-hidden="true" />
-        Ver ejemplo de reportes
+        {t.home.cta}
       </Link>
     </div>
   );

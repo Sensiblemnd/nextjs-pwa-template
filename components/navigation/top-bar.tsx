@@ -2,27 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, Download, HelpCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Menu, X, Download, HelpCircle, Languages } from "lucide-react";
 import { useInstallPrompt } from "@/lib/hooks/use-install-prompt";
+import { useI18n, setLocaleCookie } from "@/lib/i18n/client";
+import { DICTIONARIES } from "@/lib/i18n";
 
 type LinkItem = { label: string; href: string; icon: React.ElementType };
 type ActionItem = { label: string; onClick: () => void; icon: React.ElementType };
 type MenuItem = LinkItem | ActionItem;
 
-const ALWAYS_ITEMS: LinkItem[] = [
-  { label: "Cómo instalar la app", href: "/install", icon: HelpCircle },
-];
-
 export function TopBar() {
   const [open, setOpen] = useState(false);
   const { installPrompt, isInstalled, install } = useInstallPrompt();
+  const { locale, t } = useI18n();
+  const router = useRouter();
 
   const close = () => setOpen(false);
 
   const installAction: ActionItem | null =
     !isInstalled && installPrompt
       ? {
-          label: "Instalar la app",
+          label: t.menu.installApp,
           icon: Download,
           onClick: () => {
             install();
@@ -31,16 +32,33 @@ export function TopBar() {
         }
       : null;
 
-  const menuItems: MenuItem[] = [...(installAction ? [installAction] : []), ...ALWAYS_ITEMS];
+  // Labelled with the target language's own name ("Español" / "English") so
+  // it's readable even when the current locale isn't yours
+  const otherLocale = locale === "es" ? "en" : "es";
+  const languageAction: ActionItem = {
+    label: DICTIONARIES[otherLocale].languageName,
+    icon: Languages,
+    onClick: () => {
+      setLocaleCookie(otherLocale);
+      close();
+      router.refresh();
+    },
+  };
+
+  const menuItems: MenuItem[] = [
+    ...(installAction ? [installAction] : []),
+    { label: t.menu.howToInstall, href: "/install", icon: HelpCircle },
+    languageAction,
+  ];
 
   return (
     <>
       <div className="top-bar">
-        <span className="top-bar-title">PWA Template</span>
+        <span className="top-bar-title">{t.appName}</span>
         <button
           onClick={() => setOpen(true)}
           className="top-bar-menu-btn"
-          aria-label="Abrir menú"
+          aria-label={t.menu.open}
           aria-expanded={open}
           aria-haspopup="true"
         >
@@ -53,12 +71,12 @@ export function TopBar() {
       <nav
         className="menu-drawer"
         data-open={open ? "true" : "false"}
-        aria-label="Menú principal"
+        aria-label={t.menu.title}
         aria-hidden={!open}
       >
         <div className="menu-drawer-header">
-          <span className="menu-drawer-title">Menú</span>
-          <button onClick={close} className="menu-drawer-close" aria-label="Cerrar menú">
+          <span className="menu-drawer-title">{t.menu.title}</span>
+          <button onClick={close} className="menu-drawer-close" aria-label={t.menu.close}>
             <X size={22} strokeWidth={2} aria-hidden="true" />
           </button>
         </div>

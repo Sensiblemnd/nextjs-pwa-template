@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useI18n } from "@/lib/i18n/client";
 
 export default function Error({
   error,
@@ -9,6 +10,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useI18n();
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -18,12 +20,10 @@ export default function Error({
       <p className="error-page-icon" aria-hidden="true">
         ⚠️
       </p>
-      <h2>Algo salió mal</h2>
-      <p className="error-page-text">
-        Ocurrió un error inesperado. Puedes intentar de nuevo o volver al inicio.
-      </p>
+      <h2>{t.errorPage.title}</h2>
+      <p className="error-page-text">{t.errorPage.body}</p>
       <button onClick={reset} className="btn-primary">
-        Intentar de nuevo
+        {t.errorPage.retry}
       </button>
     </div>
   );

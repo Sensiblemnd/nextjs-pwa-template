@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/client";
 
 export function ServiceWorkerRegistrar() {
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
@@ -51,9 +53,9 @@ export function ServiceWorkerRegistrar() {
 
   return (
     <div role="status" aria-live="polite" className="sw-update-toast">
-      <span>Nueva versión disponible</span>
+      <span>{t.swUpdate.newVersion}</span>
       <button onClick={() => window.location.reload()} className="sw-update-btn">
-        Actualizar
+        {t.swUpdate.refresh}
       </button>
     </div>
   );

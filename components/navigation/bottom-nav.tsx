@@ -3,19 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, ClipboardList } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-
-const NAV_ITEMS: { href: string; icon: LucideIcon; label: string }[] = [
-  { href: "/", icon: Home, label: "Inicio" },
-  { href: "/reports", icon: ClipboardList, label: "Reportes" },
-];
+import { useI18n } from "@/lib/i18n/client";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useI18n();
+
+  const navItems = [
+    { href: "/", icon: Home, label: t.nav.home },
+    { href: "/reports", icon: ClipboardList, label: t.nav.reports },
+  ];
 
   return (
-    <nav className="bottom-nav" aria-label="Navegación principal">
-      {NAV_ITEMS.map((item) => {
+    <nav className="bottom-nav" aria-label={t.nav.main}>
+      {navItems.map((item) => {
         const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
         const Icon = item.icon;
 

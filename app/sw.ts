@@ -2,6 +2,8 @@ import { openDB } from "idb";
 import { defaultCache, PAGES_CACHE_NAME } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist, NetworkFirst, CacheFirst, ExpirationPlugin } from "serwist";
+import { DEFAULT_LOCALE, DICTIONARIES, isLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 declare global {
   interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
@@ -234,6 +236,19 @@ async function drainQueue(): Promise<void> {
 
 // ── Push Notifications ───────────────────────────
 // Receiving end only — sending push requires a server with VAPID keys.
+
+// The SW has no access to React context or the locale cookie at push time —
+// LocaleProvider mirrors the locale into the settings store for exactly this.
+async function getStoredLocale(): Promise<Locale> {
+  try {
+    const db = await openDB(DB_NAME, DB_VERSION);
+    const row = (await db.get("settings", "locale")) as { value?: unknown } | undefined;
+    return isLocale(row?.value) ? row.value : DEFAULT_LOCALE;
+  } catch {
+    return DEFAULT_LOCALE;
+  }
+}
+
 self.addEventListener("push", (event: Event) => {
   const pushEvent = event as PushEvent;
   let data: Record<string, unknown> = {};
@@ -243,27 +258,33 @@ self.addEventListener("push", (event: Event) => {
     data = { body: pushEvent.data?.text() };
   }
 
-  const body = typeof data.body === "string" ? data.body : "Tienes una nueva notificación";
-  const title = typeof data.title === "string" ? data.title : "PWA Template";
-  const tag = typeof data.tag === "string" ? data.tag : "pwa-template";
-  const url = typeof data.url === "string" ? data.url : "/";
-  const critical = data.critical === true;
+  pushEvent.waitUntil(
+    (async () => {
+      const t = DICTIONARIES[await getStoredLocale()].notifications;
 
-  const options: ExtendedNotificationOptions = {
-    body,
-    icon: "/icons/icon.png",
-    badge: "/icons/badge.png",
-    tag,
-    data: { url },
-    requireInteraction: critical,
-    vibrate: critical ? [200, 100, 200] : [100],
-    actions: [
-      { action: "view", title: "Ver" },
-      { action: "dismiss", title: "Cerrar" },
-    ],
-  };
+      const body = typeof data.body === "string" ? data.body : t.defaultBody;
+      const title = typeof data.title === "string" ? data.title : "PWA Template";
+      const tag = typeof data.tag === "string" ? data.tag : "pwa-template";
+      const url = typeof data.url === "string" ? data.url : "/";
+      const critical = data.critical === true;
 
-  pushEvent.waitUntil(self.registration.showNotification(title, options));
+      const options: ExtendedNotificationOptions = {
+        body,
+        icon: "/icons/icon.png",
+        badge: "/icons/badge.png",
+        tag,
+        data: { url },
+        requireInteraction: critical,
+        vibrate: critical ? [200, 100, 200] : [100],
+        actions: [
+          { action: "view", title: t.view },
+          { action: "dismiss", title: t.dismiss },
+        ],
+      };
+
+      await self.registration.showNotification(title, options);
+    })()
+  );
 });
 
 self.addEventListener("notificationclick", (event: Event) => {

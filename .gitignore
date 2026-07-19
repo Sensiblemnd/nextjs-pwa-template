@@ -40,3 +40,6 @@ public/.well-known/
 
 # Generated
 tsconfig.tsbuildinfo
+
+# Playwright MCP artifacts (snapshots/screenshots from UI verification)
+.playwright-mcp/

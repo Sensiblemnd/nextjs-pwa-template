@@ -8,25 +8,30 @@ import { InstallPromptBar } from "@/components/layout/install-prompt-bar";
 import { OfflineQueueStatus } from "@/components/offline/offline-queue-status";
 import { ServiceWorkerRegistrar } from "@/components/layout/service-worker-registrar";
 import { FontScaleProvider } from "@/components/layout/font-scale-provider";
+import { LocaleProvider } from "@/lib/i18n/client";
+import { getLocale, getServerDictionary } from "@/lib/i18n/server";
 
-export const metadata: Metadata = {
-  title: {
-    default: "PWA Template",
-    template: "%s: PWA Template",
-  },
-  description: "Plantilla de aplicación web progresiva (PWA) con Next.js, Serwist e IndexedDB",
-  manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "PWA Template",
-  },
-  formatDetection: {
-    telephone: false,
-    email: false,
-    address: false,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getServerDictionary();
+  return {
+    title: {
+      default: t.appName,
+      template: `%s: ${t.appName}`,
+    },
+    description: t.meta.description,
+    manifest: "/manifest.webmanifest",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: t.appName,
+    },
+    formatDetection: {
+      telephone: false,
+      email: false,
+      address: false,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#0d1117",
@@ -35,28 +40,31 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   return (
-    <html lang="es" className="dark">
+    <html lang={locale} className="dark">
       <body>
-        <ServiceWorkerRegistrar />
-        <FontScaleProvider />
-        <div className="app-shell">
-          <header>
-            <TopBar />
-            <OfflineStatusBar />
-            <ConnectivityIndicator />
-            <InstallPromptBar />
-          </header>
+        <LocaleProvider locale={locale}>
+          <ServiceWorkerRegistrar />
+          <FontScaleProvider />
+          <div className="app-shell">
+            <header>
+              <TopBar />
+              <OfflineStatusBar />
+              <ConnectivityIndicator />
+              <InstallPromptBar />
+            </header>
 
-          {/* Main scrollable content */}
-          <main id="main-content" className="flex flex-col overflow-y-auto">
-            {children}
-          </main>
+            {/* Main scrollable content */}
+            <main id="main-content" className="flex flex-col overflow-y-auto">
+              {children}
+            </main>
 
-          <OfflineQueueStatus />
-          <BottomNav />
-        </div>
+            <OfflineQueueStatus />
+            <BottomNav />
+          </div>
+        </LocaleProvider>
       </body>
     </html>
   );

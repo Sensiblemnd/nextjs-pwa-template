@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ReportCard } from "@/components/cards/report-card";
 import { fetchAndCacheReports, type CachedReport } from "@/lib/db";
 import { PullToRefresh } from "@/components/ui/pull-to-refresh";
+import { useI18n } from "@/lib/i18n/client";
 
 interface ReportListProps {
   promise: Promise<CachedReport[]>;
@@ -25,6 +26,7 @@ export function ReportListSkeleton() {
 export function ReportList({ promise, newHref, emptyMessage }: ReportListProps) {
   const all = use(promise);
   const [reports, setReports] = useState(all);
+  const { t } = useI18n();
 
   const refresh = useCallback(async () => {
     const fresh = await fetchAndCacheReports();
@@ -48,7 +50,7 @@ export function ReportList({ promise, newHref, emptyMessage }: ReportListProps) 
           <div className="alert-empty">
             <p>{emptyMessage}</p>
             <Link href={newHref} className="btn-primary">
-              Crear reporte
+              {t.reports.create}
             </Link>
           </div>
         ) : (

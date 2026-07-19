@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { getPendingCount } from "@/lib/db";
+import { useI18n } from "@/lib/i18n/client";
 
 export function ConnectivityIndicator() {
   const [isOnline, setIsOnline] = useState(true);
   const [pendingCount, setPendingCount] = useState(0);
   const [currentTime, setCurrentTime] = useState("");
+  const { locale, t } = useI18n();
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
@@ -18,7 +20,7 @@ export function ConnectivityIndicator() {
 
     const updateTime = () => {
       setCurrentTime(
-        new Date().toLocaleTimeString("es", {
+        new Date().toLocaleTimeString(locale, {
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
@@ -50,22 +52,20 @@ export function ConnectivityIndicator() {
       clearInterval(pendingInterval);
       clearInterval(timeInterval);
     };
-  }, []);
+  }, [locale]);
 
   return (
     <div
       className="connectivity-bar"
       data-online={isOnline ? "true" : "false"}
       role="status"
-      aria-label={`Estado: ${isOnline ? "en línea" : "sin conexión"}`}
+      aria-label={t.connectivity.statusLabel(isOnline)}
     >
       <span className="connectivity-dot" aria-hidden="true" />
-      <span>{isOnline ? "En línea" : "Sin conexión"}</span>
+      <span>{isOnline ? t.connectivity.online : t.connectivity.offline}</span>
 
       {pendingCount > 0 && (
-        <span className="connectivity-pending">
-          {pendingCount} pendiente{pendingCount !== 1 ? "s" : ""}
-        </span>
+        <span className="connectivity-pending">{t.connectivity.pending(pendingCount)}</span>
       )}
 
       {currentTime && <span className="connectivity-time">{currentTime}</span>}

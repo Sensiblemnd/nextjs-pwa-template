@@ -1,33 +1,29 @@
 import type { Metadata } from "next";
+import { getServerDictionary } from "@/lib/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Cómo instalar",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getServerDictionary();
+  return { title: t.installPage.metaTitle };
+}
 
-export default function InstallPage() {
+export default async function InstallPage() {
+  const t = await getServerDictionary();
   return (
     <div className="home-page">
-      <h1 className="home-title">Cómo instalar la app</h1>
-      <p className="home-subtitle">
-        Instala la aplicación en tu pantalla de inicio para acceso rápido y uso sin conexión.
-      </p>
+      <h1 className="home-title">{t.installPage.title}</h1>
+      <p className="home-subtitle">{t.installPage.subtitle}</p>
 
       <section className="home-feature">
         <div>
-          <p className="home-feature-title">Android (Chrome)</p>
-          <p className="home-feature-desc">
-            Toca el menú ⋮ del navegador y elige «Instalar aplicación» o «Agregar a la pantalla
-            principal».
-          </p>
+          <p className="home-feature-title">{t.installPage.androidTitle}</p>
+          <p className="home-feature-desc">{t.installPage.androidDesc}</p>
         </div>
       </section>
 
       <section className="home-feature">
         <div>
-          <p className="home-feature-title">iPhone / iPad (Safari)</p>
-          <p className="home-feature-desc">
-            Toca el botón Compartir y elige «Agregar a la pantalla de inicio».
-          </p>
+          <p className="home-feature-title">{t.installPage.iosTitle}</p>
+          <p className="home-feature-desc">{t.installPage.iosDesc}</p>
         </div>
       </section>
     </div>

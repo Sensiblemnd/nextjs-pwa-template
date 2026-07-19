@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Check, WifiOff } from "lucide-react";
+import { useI18n } from "@/lib/i18n/client";
 
 export function OfflineStatusBar() {
   const [isOnline, setIsOnline] = useState(true);
   const [showBanner, setShowBanner] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
@@ -45,9 +47,7 @@ export function OfflineStatusBar() {
       ) : (
         <WifiOff size={15} strokeWidth={2} aria-hidden="true" />
       )}
-      {isOnline
-        ? "Conexión restaurada: sincronizando reportes"
-        : "Sin conexión: los reportes se guardarán localmente"}
+      {isOnline ? t.statusBar.restored : t.statusBar.offline}
     </div>
   );
 }

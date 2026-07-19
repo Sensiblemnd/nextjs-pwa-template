@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { DEFAULT_LOCALE, DICTIONARIES } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
+import { getClientLocale } from "@/lib/i18n/client";
 
 // Renders outside the root layout, so globals.css may not be loaded —
-// inline styles are the only reliable styling here.
+// inline styles are the only reliable styling here. No <LocaleProvider>
+// either: resolve the locale from the cookie after mount (a server-rendered
+// shell can't know it, and a hydration mismatch on the error page is worse
+// than a brief default-language flash).
 export default function GlobalError({
   error,
   reset,
@@ -11,12 +17,19 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  const t = DICTIONARIES[locale];
+
   useEffect(() => {
     console.error(error);
   }, [error]);
 
+  useEffect(() => {
+    setLocale(getClientLocale());
+  }, []);
+
   return (
-    <html lang="es">
+    <html lang={locale}>
       <body
         style={{
           margin: 0,
@@ -37,7 +50,7 @@ export default function GlobalError({
         <p style={{ fontSize: "2.5rem", lineHeight: 1 }} aria-hidden="true">
           ⚠️
         </p>
-        <h2 style={{ fontSize: "1.125rem", fontWeight: 700, margin: 0 }}>Algo salió mal</h2>
+        <h2 style={{ fontSize: "1.125rem", fontWeight: 700, margin: 0 }}>{t.errorPage.title}</h2>
         <p
           style={{
             fontSize: "0.9375rem",
@@ -47,7 +60,7 @@ export default function GlobalError({
             margin: 0,
           }}
         >
-          Ocurrió un error inesperado. Puedes intentar de nuevo.
+          {t.errorPage.bodyShort}
         </p>
         <button
           onClick={reset}
@@ -64,7 +77,7 @@ export default function GlobalError({
             minHeight: "44px",
           }}
         >
-          Intentar de nuevo
+          {t.errorPage.retry}
         </button>
       </body>
     </html>

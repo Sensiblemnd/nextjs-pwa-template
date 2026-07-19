@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { REPORT_CATEGORIES, getCategoryConfig, getExpiryHours } from "@/lib/categories";
+import { REPORT_CATEGORIES, getCategoryLabel, getExpiryHours } from "@/lib/categories";
 import type { ReportCategory } from "@/lib/categories";
 import type { CachedReport } from "@/lib/db";
 import { stripHtml } from "@/lib/sanitize";
+import { getLocale } from "@/lib/i18n/server";
 
 // In-memory store so the template works end-to-end out of the box. It resets
 // on every server restart and doesn't share state across serverless instances
@@ -27,7 +28,7 @@ const insertSchema = z.object({
   // response re-sends the same id and the duplicate maps to success
   id: z.uuid().optional(),
   category: z.enum(REPORT_CATEGORIES),
-  description: z.string().min(1, "La descripción es obligatoria").max(500, "Máximo 500 caracteres"),
+  description: z.string().min(1).max(500),
   address: z.string().max(200).optional().default(""),
   severity: z.enum(["low", "medium", "high", "critical"]).default("medium"),
   latitude: z.number().min(-90).max(90).nullable().optional(),
@@ -35,6 +36,9 @@ const insertSchema = z.object({
 });
 
 export async function GET() {
+  // Titles are derived from the category at read time, so they follow the
+  // requester's locale (cookie set by LocaleProvider)
+  const locale = await getLocale();
   const now = Date.now();
   const reports: CachedReport[] = [...REPORTS.values()]
     .filter((r) => r.expiresAt > now)
@@ -42,7 +46,7 @@ export async function GET() {
     .map((r) => ({
       id: r.id,
       category: r.category,
-      title: getCategoryConfig(r.category).labelES,
+      title: getCategoryLabel(r.category, locale),
       description: r.description,
       address: r.address || undefined,
       latitude: r.latitude,

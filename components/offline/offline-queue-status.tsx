@@ -4,11 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import { getPendingCount } from "@/lib/db";
 import { syncPendingReports } from "@/lib/sync";
 import { useNetworkState } from "@/lib/hooks/use-network-state";
+import { useI18n } from "@/lib/i18n/client";
 
 export function OfflineQueueStatus() {
   const [pendingCount, setPendingCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const { online } = useNetworkState();
+  const { t } = useI18n();
 
   const refresh = useCallback(async () => {
     const count = await getPendingCount();
@@ -59,14 +61,10 @@ export function OfflineQueueStatus() {
   return (
     <div className="offline-queue">
       <span className="queue-count">{isSyncing ? "↻" : pendingCount}</span>
-      <span>
-        {isSyncing
-          ? "Sincronizando..."
-          : `${pendingCount} reporte${pendingCount !== 1 ? "s" : ""} pendiente${pendingCount !== 1 ? "s" : ""}`}
-      </span>
+      <span>{isSyncing ? t.queue.syncing : t.queue.pending(pendingCount)}</span>
       {!isSyncing && online && (
         <button className="queue-sync-btn" onClick={handleManualSync}>
-          Sincronizar
+          {t.queue.syncNow}
         </button>
       )}
     </div>
