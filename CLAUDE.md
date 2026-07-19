@@ -63,14 +63,6 @@ Two locales (`en`, `es`), cookie-based — the locale never appears in the URL (
 
 **Never hardcode user-facing strings in components** — add a key to both dictionaries.
 
-### CSS architecture
+### CSS architecture and components
 
-Native CSS with cascade layers, ordered `base → tokens → layout → components → utilities → overrides`. `styles/globals.css` is an import manifest only — real CSS lives in `styles/*.css` and `styles/components/*` (one file per component). No Tailwind classes in components despite tailwind being installed for the pipeline.
-
-## Conventions
-
-- All colors/spacing/radii via CSS custom properties in `styles/tokens.css` (dark-first) — never hardcoded hex values
-- CSS state via `data-*` attributes, not inline styles
-- `rem` font sizes only (user font scaling); 44px minimum touch targets (enforced in `styles/base.css`)
-- External stores (network state, install prompt, IndexedDB) are consumed via `useSyncExternalStore` hooks in `lib/hooks/` — never mirrored into `useState + useEffect`
-- `lib/categories.ts` is the single source of truth for category IDs, labels, icons, and expiry
+CSS conventions (cascade layers, tokens, touch targets, inline-style policy) live in `styles/CLAUDE.md`. Component conventions (external stores, i18n usage, category metadata) live in `components/CLAUDE.md`. Both load automatically when you touch files in those folders — read them before editing there.
