@@ -30,7 +30,11 @@ const precacheManifest = self.__SW_MANIFEST;
 
 const serwist = new Serwist({
   precacheEntries: precacheManifest,
-  skipWaiting: true,
+  // Activating immediately would delete the old build's precached chunks out
+  // from under tabs still running it. Instead the update waits until the user
+  // accepts it — ServiceWorkerRegistrar posts SKIP_WAITING, which Serwist
+  // listens for whenever skipWaiting is false.
+  skipWaiting: false,
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
@@ -136,9 +140,28 @@ self.addEventListener("activate", (event) => {
         )
       );
       await meta.put("/build-id", new Response(buildId));
+      // Not awaited: activation (and so the reload that accepted the update)
+      // would otherwise wait on these fetches
+      void warmPageCache();
     })()
   );
 });
+
+// The purge above leaves only the precached /offline page, so the app would
+// open to it offline until each route is revisited. Re-fetch the start_url
+// and main routes into the page cache; best effort, failures stay uncached.
+const WARM_ROUTES = ["/", "/reports", "/reports/new"];
+
+async function warmPageCache(): Promise<void> {
+  const pages = await caches.open(PAGES_CACHE_NAME.html);
+  await Promise.allSettled(
+    WARM_ROUTES.map(async (route) => {
+      const res = await fetch(route);
+      // Redirected responses can't be used to answer a navigation
+      if (res.ok && !res.redirected) await pages.put(route, res);
+    })
+  );
+}
 
 serwist.addEventListeners();
 

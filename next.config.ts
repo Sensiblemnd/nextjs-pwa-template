@@ -6,6 +6,12 @@ const withSerwist = withSerwistInit({
   swDest: "public/sw.js",
   cacheOnNavigation: true,
   disable: process.env.NODE_ENV === "development",
+  // ServiceWorkerRegistrar owns registration (and its options) — a second
+  // register() from Serwist would race it for the registration's settings
+  register: false,
+  // Default reloads every page on reconnect, wiping unsaved form input; the
+  // sync queue already handles coming back online
+  reloadOnOnline: false,
   // The SW's document fallback (app/sw.ts) can only serve /offline if it was
   // precached; random revision forces a re-fetch of its HTML on every deploy
   additionalPrecacheEntries: [{ url: "/offline", revision: crypto.randomUUID() }],
@@ -42,7 +48,14 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 86400,
   },
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      { source: "/(.*)", headers: securityHeaders },
+      // A CDN holding a stale sw.js means clients never see the new version
+      {
+        source: "/sw.js",
+        headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }],
+      },
+    ];
   },
 };
 
